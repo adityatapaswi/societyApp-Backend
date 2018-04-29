@@ -17,7 +17,7 @@ class ServiceHandler extends SimpleRest {
             $response = array('Success' => false, 'Values' => $rawData);
         } else {
 //            echo $rawData["reply"];
-            if (isset( $rawData["reply"])) {
+            if (isset($rawData["reply"])) {
                 $statusCode = 401;
                 $response = array('Success' => false, 'Values' => $rawData["reply"]);
             } else {
@@ -56,6 +56,7 @@ class ServiceHandler extends SimpleRest {
 
         echo json_encode($response);
     }
+
     function addPost($post) {
 
         $services = new Services();
@@ -102,7 +103,29 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function addEvent($event){
+    function makePayment($paymentObj) {
+
+        $services = new Services();
+        $rawData = $services->makePayment($paymentObj);
+
+
+        if (empty($rawData)) {
+            $statusCode = 404;
+            $rawData = array('error' => 'Something Went Wrong!');
+            $response = array('Success' => false, 'Values' => $rawData);
+        } else {
+            $statusCode = 200;
+            $response = $rawData;
+        }
+        $requestContentType = 'application/json';
+        $this->setHttpHeaders($requestContentType, $statusCode);
+
+        header("Access-Control-Allow-Origin: *");
+
+        echo json_encode($response);
+    }
+
+    function addEvent($event) {
 
         $services = new Services();
         $rawData = $services->addEvent($event);
@@ -123,7 +146,31 @@ class ServiceHandler extends SimpleRest {
 
         echo json_encode($response);
     }
-    function getBalanceSummary($society)  {
+
+    function completePayment($paymentObj) {
+        $services = new Services();
+        $rawData = $services->completePayment($paymentObj);
+
+
+        if (empty($rawData)) {
+            $statusCode = 404;
+            $rawData = array('error' => 'Something Went Wrong!');
+            $response = array('Success' => false, 'Values' => $rawData);
+        } else {
+            $statusCode = 200;
+            $response = $rawData;
+        }
+        $requestContentType = 'application/json';
+        $this->setHttpHeaders($requestContentType, $statusCode);
+
+
+        header("Access-Control-Allow-Origin: *");
+
+
+        echo json_encode($response);
+    }
+
+    function getBalanceSummary($society) {
 
         $services = new Services();
         $rawData = $services->getBalanceSummary($society);
@@ -167,7 +214,7 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getDiscussions($society){
+    function getDiscussions($society) {
 
         $services = new Services();
         $rawData = $services->getDiscussions($society);
@@ -233,10 +280,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function loginResident($mobile) {
+    function setPaymentConfiguration($configuration) {
 
         $services = new Services();
-        $rawData = $services->loginResident($mobile);
+        $rawData = $services->setPaymentConfiguration($configuration);
 
 
         if (empty($rawData)) {
@@ -255,7 +302,29 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getBirthdaysAndAnniversaries($society){
+    function getPaymentConfiguration($society) {
+
+        $services = new Services();
+        $rawData = $services->getPaymentConfiguration($society);
+
+
+        if (empty($rawData)) {
+            $statusCode = 404;
+            $rawData = array('error' => 'Something Went Wrong!');
+            $response = array('Success' => false, 'Values' => $rawData);
+        } else {
+            $statusCode = 200;
+            $response = $rawData;
+        }
+        $requestContentType = 'application/json';
+        $this->setHttpHeaders($requestContentType, $statusCode);
+
+        header("Access-Control-Allow-Origin: *");
+
+        echo json_encode($response);
+    }
+
+    function getBirthdaysAndAnniversaries($society) {
 
         $services = new Services();
         $rawData = $services->getBirthdaysAndAnniversaries($society);
@@ -300,10 +369,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getTransactions($society)  {
+    function getTransactions($society) {
 
         $services = new Services();
-        $rawData = $services->getTransactions($society) ;
+        $rawData = $services->getTransactions($society);
 
 
         if (empty($rawData)) {

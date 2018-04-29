@@ -203,7 +203,6 @@ Class Services {
             while ($row = $result->fetch_assoc()) {
 
                 $output[] = $row;
-                        
             }
         }
         $conn->close();
@@ -296,6 +295,54 @@ Class Services {
         }
 
         $conn->close();
+        return $output;
+    }
+
+    public function makePayment($paymentObj) {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://test.instamojo.com/api/1.1/payment-requests/');
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("X-Api-Key:$paymentObj->api_key",
+            "X-Auth-Token:$paymentObj->auth_token"));
+        $payload = Array(
+            'purpose' => $paymentObj->purpose,
+            'amount' => $paymentObj->amount,
+            'phone' => $paymentObj->phone,
+            'buyer_name' => $paymentObj->name,
+            'redirect_url' => 'http://localhost:8383/Society%20App/index.html#/paymentRedirect',
+            'send_email' => true,
+            'webhook' => 'http://society-app.thesolutioncircle.in/api/webhook.php',
+            'send_sms' => true,
+            'email' => $paymentObj->email,
+            'allow_repeated_payments' => false
+        );
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return $response;
+    }
+
+    public function completePayment($paymentObj) {
+
+        $dbconn = new dbconn();
+        $output = array();
+        $json = json_encode($paymentObj);
+//        echo $json;
+        $sql = "INSERT INTO payments (`society_id`,`amount`,`payed_by`,`purpose`,`purchase_token`,`payment_obj`,`payed_by_email`) VALUES ((select sid from user_register where email='$paymentObj->buyer'),'$paymentObj->amount','$paymentObj->buyer_name','$paymentObj->purpose','$paymentObj->payment_id','$json','$paymentObj->buyer');";
+
+//       echo $sql;
+        $conn = $dbconn->return_conn();
+        $result = $conn->query($sql);
+        if ($result) {
+            $output = "Insertion Success";
+        }
+        $conn->close();
+
         return $output;
     }
 
@@ -549,12 +596,12 @@ Class Services {
         }
     }
 
-    public function makeDonation($donation) {
+    public function setPaymentConfiguration($configuration) {
 
         $dbconn = new dbconn();
         $output = array();
 
-        $sql = "CALL makeDonation('$donation->payby', '$donation->payTo', '$donation->amt', '$donation->aid','$donation->toEmail','$donation->mobile');";
+        $sql = "CALL set_payment_config($configuration->sid, '$configuration->api_key', '$configuration->auth_token', $configuration->monthly_maintainance);";
 
 
 //       echo $sql;
@@ -563,11 +610,27 @@ Class Services {
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $output = $row["reply"];
-                if (strcmp($output, 'User Already Done Donation') != 0) {
-                    $this->sendMail($donation->toEmail, $donation->amt, $donation->address, $donation->payby, $output, $donation->payTo);
-                    $this->sendMail('gcsmitra.mandal@gmail.com', $donation->amt, $donation->address, $donation->payby, $output, $donation->payTo);
-                    $output = "Payment Registered Successfully";
-                }
+            }
+        }
+        $conn->close();
+
+        return $output;
+    }
+
+    public function getPaymentConfiguration($society) {
+
+        $dbconn = new dbconn();
+        $output = array();
+
+        $sql = "SELECT * FROM payment_config where society_id=$society->id;";
+
+
+//       echo $sql;
+        $conn = $dbconn->return_conn();
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $output = $row;
             }
         }
         $conn->close();

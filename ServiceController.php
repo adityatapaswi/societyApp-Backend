@@ -94,20 +94,20 @@ switch ($view) {
         $ServiceHandler = new ServiceHandler();
         $ServiceHandler->createDiscussion($reqdata);
         break;
-    case "todaysTotal":
+    case "set payment configuration":
         // to handle REST Url /mobile/users/
         $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->getTodaysTotal();
+        $ServiceHandler->setPaymentConfiguration($reqdata);
         break;
-    case "yearsTotal":
+    case "get payment configuration":
         // to handle REST Url /mobile/users/
         $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->getYearsTotal($_GET["year"]);
+        $ServiceHandler->getPaymentConfiguration($reqdata);
         break;
-    case "yearsSummary":
+    case "make payment":
         // to handle REST Url /mobile/users/
         $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->getYearsSummary($_GET["year"]);
+        $ServiceHandler->makePayment($reqdata);
         break;
     case "addressHistory":
         // to handle REST Url /mobile/users/
