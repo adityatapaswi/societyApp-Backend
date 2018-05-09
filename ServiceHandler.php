@@ -435,10 +435,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getDatesForSummary() {
+    function addMessageToDiscussion($message) {
 
         $services = new Services();
-        $rawData = $services->getDatesForSummary();
+        $rawData = $services->addMessageToDiscussion($message);
 
 
         if (empty($rawData)) {
@@ -457,10 +457,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getYearsForSummary() {
+    function getMessages($pagination) {
 
         $services = new Services();
-        $rawData = $services->getYearsForSummary();
+        $rawData = $services->getMessages($pagination);
 
 
         if (empty($rawData)) {

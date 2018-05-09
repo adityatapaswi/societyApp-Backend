@@ -109,10 +109,10 @@ switch ($view) {
         $ServiceHandler = new ServiceHandler();
         $ServiceHandler->makePayment($reqdata);
         break;
-    case "addressHistory":
+    case "add message to discussion":
         // to handle REST Url /mobile/users/
         $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->getHistoryOfAddress($_GET["aid"]);
+        $ServiceHandler->addMessageToDiscussion($reqdata);
         break;
     case "signup":
         // to handle REST Url /mobile/users/
@@ -128,13 +128,9 @@ switch ($view) {
         $ServiceHandler = new ServiceHandler();
         $ServiceHandler->sendNotification($notification);
         break;
-    case "registerResident":
-        // to handle REST Url /mobile/users/
-        $postdata = file_get_contents("php://input");
-        $resident = json_decode($postdata);
-//       echo $user->name;
+    case "get messages":
         $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->registerResident($resident);
+        $ServiceHandler->getMessages($reqdata);
         break;
     case "addHistory":
         // to handle REST Url /mobile/users/

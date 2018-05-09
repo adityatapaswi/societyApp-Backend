@@ -245,28 +245,25 @@ Class Services {
         return $output;
     }
 
-    public function getDatesForSummary() {
+    public function addMessageToDiscussion($message) {
         $dbconn = new dbconn();
         $output = array();
-        $sql = "SELECT distinct(`on`) as date FROM gcsmm.donation_master order by `on` desc;";
+        $sql = "INSERT INTO `societydb`.`disscussion_messages` (`did`,`message`,`date_date`,`by_id`) VALUES ($message->did,'$message->msg',NOW(),$message->by_id);";
         $conn = $dbconn->return_conn();
         $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while ($row = $result->fetch_assoc()) {
-
-                $output[] = array('date' => $row["date"]);
-            }
+        if ($result) {
+            $output = "Insertion Success";
         }
         $conn->close();
+
         return $output;
+
     }
 
-    public function getYearsForSummary() {
+    public function getMessages($pagination) {
         $dbconn = new dbconn();
         $output = array();
-        $sql = "SELECT distinct(year) FROM gcsmm.donation_history order by year desc;";
+        $sql = "SELECT * FROM messages where did=$pagination->id limit $pagination->limit offset $pagination->offset;";
         $conn = $dbconn->return_conn();
         $result = $conn->query($sql);
 
@@ -274,7 +271,7 @@ Class Services {
             // output data of each row
             while ($row = $result->fetch_assoc()) {
 
-                $output[] = $row["year"];
+                $output[] = $row;
             }
         }
         $conn->close();
