@@ -413,10 +413,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getSummaryFromDate($date) {
+    function deleteImage($img) {
 
         $services = new Services();
-        $rawData = $services->getSummaryFromDate($date);
+        $rawData = $services->deleteImage($img);
 
 
         if (empty($rawData)) {
@@ -479,10 +479,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getHistoryOfAddress($aid) {
+    function changePassword($user) {
 
         $services = new Services();
-        $rawData = $services->getHistoryOfAddress($aid);
+        $rawData = $services->changePassword($user);
 
 
         if (empty($rawData)) {

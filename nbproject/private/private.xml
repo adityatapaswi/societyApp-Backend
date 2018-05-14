@@ -5,6 +5,7 @@
         <group>
             <file>file:/C:/xampp/htdocs/society_api/ServiceHandler.php</file>
             <file>file:/C:/xampp/htdocs/society_api/ServiceController.php</file>
+            <file>file:/C:/xampp/htdocs/society_api/fileUpload.php</file>
             <file>file:/C:/xampp/htdocs/society_api/Services.php</file>
         </group>
     </open-files>

@@ -257,7 +257,6 @@ Class Services {
         $conn->close();
 
         return $output;
-
     }
 
     public function getMessages($pagination) {
@@ -452,41 +451,45 @@ Class Services {
         return $output;
     }
 
-    public function addHistory($address) {
+    public function deleteImage($img) {
 
         $dbconn = new dbconn();
         $output = array();
-
-        $sql = "CALL addHistory($address->aid, $address->year, $address->amt);";
+//        echo '.'.$img->image_url;
+        if (unlink('.' . $img->image_url)) {
+            $sql = "DELETE FROM image_gallery WHERE id=$img->id;";
 
 //       echo $sql;
-        $conn = $dbconn->return_conn();
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $output = $row["reply"];
+            $conn = $dbconn->return_conn();
+            $result = $conn->query($sql);
+            if ($result) {
+                $output = "File Deleted Successfully";
+            } else {
+                $output = "File Deletion Failed";
             }
+            $conn->close();
+        } else {
+            $output = "File Not Found";
         }
-        $conn->close();
+
 
         return $output;
     }
 
-    public function verify($phone) {
+    public function changePassword($user) {
 
         $dbconn = new dbconn();
         $output = array();
 
-        $sql = "CALL verifyResident($phone, 1);";
+        $sql = "UPDATE user_register SET password = '$user->password' WHERE id =$user->id ;";
 
 //       echo $sql;
         $conn = $dbconn->return_conn();
         $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
+        if ($result) {
 
-                $output = $row["reply"];
-            }
+                $output = 'Password Updated Successfully';
+            
         }
         $conn->close();
 

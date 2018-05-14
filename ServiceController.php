@@ -5,22 +5,21 @@ require_once("./SimpleRest.php");
 require_once("./util.php");
 
 $rest = new SimpleRest();
-$util=new util();
+$util = new util();
 //header("Access-Control-Allow-Origin: *");
 
 
 $view = "";
-parse_str(file_get_contents("php://input"), $reqdata);             
+parse_str(file_get_contents("php://input"), $reqdata);
 $reqdata = (object) $reqdata;
 //$reqdata = file_get_contents("php://input");
 //$util->printLog($reqdata);
 //$reqdata  = json_decode($reqdata);
 
-if (isset($reqdata->view)){
+if (isset($reqdata->view)) {
     $view = $reqdata->view;
 //    echo $view;
-}
-else {
+} else {
     $statusCode = 404;
     $rawData = array('error' => 'Something Went Wrong!');
     $response = array('Success' => false, 'Values' => $rawData);
@@ -132,21 +131,13 @@ switch ($view) {
         $ServiceHandler = new ServiceHandler();
         $ServiceHandler->getMessages($reqdata);
         break;
-    case "addHistory":
-        // to handle REST Url /mobile/users/
-        $postdata = file_get_contents("php://input");
-        $address = json_decode($postdata);
-//       echo $user->name;
+    case "delete image":
         $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->addHistory($address);
+        $ServiceHandler->deleteImage($reqdata);
         break;
-    case "donation":            //Make donation
-        // to handle REST Url /mobile/users/
-        $postdata = file_get_contents("php://input");
-        $donation = json_decode($postdata);
-//       echo $user->name;
+    case "change password":            //Make donation
         $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->makeDonation($donation);
+        $ServiceHandler->changePassword($reqdata);
         break;
     case "login" :
         $ServiceHandler = new ServiceHandler();
