@@ -151,13 +151,9 @@ switch ($view) {
         $ServiceHandler = new ServiceHandler();
         $ServiceHandler->getEvents($reqdata);
         break;
-    case "postEvent":
-        $postdata = file_get_contents("php://input");
-        $event = json_decode($postdata);
-        $event->title;
-        // to handle REST Url /mobile/users/
-        $ServiceHandler = new ServiceHandler();
-        $ServiceHandler->postEvent($event);
+     case "contact us":
+        $mobileRestHandler = new ServiceHandler();
+        $mobileRestHandler->contactUs($reqdata);
         break;
     case "updategcm":
         $mobileRestHandler = new MobileRestHandler();
