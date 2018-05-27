@@ -525,10 +525,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function addHistory($address) {
+    function getUserId($user) {
 
         $services = new Services();
-        $rawData = $services->addHistory($address);
+        $rawData = $services->getUserId($user);
 
 
         if (empty($rawData)) {

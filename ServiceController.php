@@ -155,9 +155,9 @@ switch ($view) {
         $mobileRestHandler = new ServiceHandler();
         $mobileRestHandler->contactUs($reqdata);
         break;
-    case "updategcm":
-        $mobileRestHandler = new MobileRestHandler();
-        $mobileRestHandler->updateGcmId($_GET["gcmid"], $_GET["phone"]);
+    case "get user id":
+        $mobileRestHandler = new ServiceHandler();
+        $mobileRestHandler->getUserId($reqdata);
         break;
     case "action":
         // to handle REST Url /mobile/users/

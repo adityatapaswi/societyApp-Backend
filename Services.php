@@ -300,7 +300,7 @@ Class Services {
         curl_setopt($ch, CURLOPT_URL, 'https://test.instamojo.com/api/1.1/payment-requests/');
         curl_setopt($ch, CURLOPT_HEADER, FALSE);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+//        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("X-Api-Key:$paymentObj->api_key",
             "X-Auth-Token:$paymentObj->auth_token"));
         $payload = Array(
@@ -308,7 +308,7 @@ Class Services {
             'amount' => $paymentObj->amount,
             'phone' => $paymentObj->phone,
             'buyer_name' => $paymentObj->name,
-            'redirect_url' => 'http://localhost:8383/Society%20App/index.html#/paymentRedirect',
+            'redirect_url' => 'http://society-app.thesolutioncircle.in/#/paymentRedirect',
             'send_email' => true,
             'webhook' => 'http://society-app.thesolutioncircle.in/api/webhook.php',
             'send_sms' => true,
@@ -488,28 +488,26 @@ Class Services {
         $result = $conn->query($sql);
         if ($result) {
 
-                $output = 'Password Updated Successfully';
-            
+            $output = 'Password Updated Successfully';
         }
         $conn->close();
 
         return $output;
     }
 
-    public function loginResident($phone) {
+    public function getUserId($user) {
 
         $dbconn = new dbconn();
         $output = array();
 
-        $sql = "CALL verifyResident($phone, 2);";
+        $sql = "SELECT id FROM user_register where email='$user->email';";
 
 //       echo $sql;
         $conn = $dbconn->return_conn();
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-
-                $output = array('name' => $row["name"], 'building' => $row["building"], 'flat' => $row["flat"], 'aid' => $row["aid"]);
+                $output = $row;
             }
         }
         $conn->close();

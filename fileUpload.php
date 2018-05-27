@@ -38,24 +38,38 @@ try {
 
     // DO NOT TRUST $_FILES['upfile']['mime'] VALUE !!
     // Check MIME Type by yourself.
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    if (false === $ext = array_search(
-            $finfo->file($_FILES['upfile']['tmp_name']), array(
-        'jpg' => 'image/jpeg',
-        'png' => 'image/png',
-        'gif' => 'image/gif'
-            ), true
-            )) {
-        throw new RuntimeException('PDF File Required.');
+
+    switch ($_FILES['upfile']['type']) {
+        case 'image/jpeg':
+            $ext = 'jpg';
+            break;
+        case 'image/png':
+            $ext = 'png';
+            break;
+        case 'image/gif':
+            $ext = 'gif';
+            break;
+        default :
+            throw new RuntimeException('Image File Required.');
     }
-    $fileName = sprintf('/uploads/%s.%s', sha1_file($_FILES['upfile']['tmp_name']), $ext);
+
+//    $finfo = new finfo(FILEINFO_MIME_TYPE);
+//    if (false === $ext = array_search(
+//            $finfo->file($_FILES['upfile']['tmp_name']), array(
+//        'jpg' => 'image/jpeg',
+//        'png' => 'image/png',
+//        'gif' => 'image/gif'
+//            ), true
+//            )) {
+//        throw new RuntimeException('PDF File Required.');
+//    }
+    $fileName = sprintf('/uploads/%s.%s', sha1_file($_FILES['upfile']['tmp_name']) . $_POST['sid'] . date('dmYHis'), $ext);
+   
     // You should name it uniquely.
     // DO NOT USE $_FILES['upfile']['name'] WITHOUT ANY VALIDATION !!
     // On this example, obtain safe unique name from its binary data.
     if (!move_uploaded_file(
-                    $_FILES['upfile']['tmp_name'], sprintf('./uploads/%s.%s', sha1_file($_FILES['upfile']['tmp_name']), $ext
-                    )
-            )) {
+                    $_FILES['upfile']['tmp_name'], './' . $fileName)) {
         throw new RuntimeException('Failed to move uploaded file.');
     }
     $fileUrl = $fileName;
