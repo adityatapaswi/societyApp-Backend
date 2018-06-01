@@ -277,23 +277,6 @@ Class Services {
         return $output;
     }
 
-    public function getYearsTotal($year) {
-        $dbconn = new dbconn();
-        $output = array();
-        $sql = "SELECT sum(amt) as Total FROM gcsmm.donation_history where year=$year;";
-        $conn = $dbconn->return_conn();
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while ($row = $result->fetch_assoc()) {
-                $output = $row["Total"];
-            }
-        }
-
-        $conn->close();
-        return $output;
-    }
-
     public function makePayment($paymentObj) {
         $ch = curl_init();
 
@@ -342,42 +325,6 @@ Class Services {
         return $output;
     }
 
-    public function getYearsSummary($year) {
-        $dbconn = new dbconn();
-        $output = array();
-        $sql = "SELECT concat(a.building,concat(', Flat/Block: ',a.flat)) as Address, b.amt FROM address_register as a,donation_history as b where b.aid=a.id and b.year=$year order by b.id desc;";
-        $conn = $dbconn->return_conn();
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while ($row = $result->fetch_assoc()) {
-                $output[] = array('Address' => $row["Address"], 'amt' => $row["amt"]);
-            }
-        }
-
-        $conn->close();
-        return $output;
-    }
-
-    public function getHistoryOfAddress($aid) {
-        $dbconn = new dbconn();
-        $output = array();
-        $sql = "SELECT concat(a.building,concat(' Flat No: ',a.flat)) as 'Address',b.year,b.amt FROM address_register as a, gcsmm.donation_history as b where  a.id=b.aid and b.aid=$aid order by b.year desc,b.id desc;";
-//       echo $sql;
-        $conn = $dbconn->return_conn();
-
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while ($row = $result->fetch_assoc()) {
-                $output[] = array('Address' => $row["Address"], 'Year' => $row["year"], 'amt' => $row["amt"]);
-            }
-        }
-
-        $conn->close();
-        return $output;
-    }
-
     public function signUp($user) {
 
         $dbconn = new dbconn();
@@ -399,7 +346,7 @@ Class Services {
                                 if (isset($row["id"])) {
                                     $sid = $row["id"];
                                     if (isset($user->doa)) {
-                                        $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'chairman', '$user->dob', '$user->dob_date', '',null,$sid);";
+                                        $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'chairman', '$user->dob', '$user->dob_date', '$user->doa','$user->doa_date',$sid);";
                                     } else {
                                         $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'chairman', '$user->dob', '$user->dob_date', '',null, $sid);";
                                     }
@@ -417,7 +364,11 @@ Class Services {
             }
             $conn->close();
         } else {
-            $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'member', '$user->dob', '$user->dob_date', '',null , $user->sid);";
+            if (isset($user->doa)) {
+                $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'chairman', '$user->dob', '$user->dob_date', '$user->doa','$user->doa_date',$user->sid);";
+            } else {
+                $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'chairman', '$user->dob', '$user->dob_date', '',null, $user->sid);";
+            }
         }
 //        echo $sql;
         $conn = $dbconn->return_conn();
@@ -667,64 +618,37 @@ Class Services {
         return $output;
     }
 
-    public function updtegcmid($phone, $gcmid) {
+    public function deleteEvent($event) {
         $dbconn = new dbconn();
         $output = array();
 
-        $sql = "update User_Register set GCMID='$gcmid' where phone='$phone'";
+        $sql = "delete FROM event_register where id='$event->id';";
+//        echo $sql;
         $conn = $dbconn->return_conn();
         $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $output = "GCMID updated";
-            }
-        } else {
-            $output = "GCMID update Failed";
+        if ($result) {
+            $output = "Event Deleted Successfully";
         }
-        $conn->close();
         return $output;
     }
 
-    public function buddyAction($userphone, $buddyphone, $action) {
-        $dbconn = new dbconn();
-
-        $output = array();
-
-        $sql = "call ActionBuddy('$userphone', '$buddyphone', $action);";
-
-        $conn = $dbconn->return_conn();
-        $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while ($row = $result->fetch_assoc()) {
-                $output = $row["reply"];
-            }
-        } else {
-            $output = 'No Rows Selected';
-        }
-        $conn->close();
-        return $output;
-    }
-
-    public function getAllTrackers($phone) {
+    public function deleteDiscussion($discussion) {
         $dbconn = new dbconn();
         $output = array();
-        $sql = "select id,name,phone from User_Register where id in(select userid from BuddyMaster where buddyid=(select id from User_Register where phone='$phone') and sts=1);";
+
+        $sql = "delete FROM discussions where id='$discussion->id';";
+//        echo $sql;
         $conn = $dbconn->return_conn();
         $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while ($row = $result->fetch_assoc()) {
-                $output[] = array('Parameter1' => $row["id"], 'Parameter2' => $row["name"], 'Parameter3' => $row["phone"]);
+        if ($result) {
+            $sql = "delete FROM societydb.disscussion_messages where did='$discussion->id';";
+//        echo $sql;
+            $conn = $dbconn->return_conn();
+            $result = $conn->query($sql);
+            if ($result) {
+                $output = "Discussion Deleted Successfully";
             }
-        } else {
-            return ("No Rows Selected");
         }
-        $conn->close();
-
         return $output;
     }
 

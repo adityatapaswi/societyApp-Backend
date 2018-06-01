@@ -159,16 +159,16 @@ switch ($view) {
         $mobileRestHandler = new ServiceHandler();
         $mobileRestHandler->getUserId($reqdata);
         break;
-    case "action":
+    case "delete event":
         // to handle REST Url /mobile/users/
-        $mobileRestHandler = new MobileRestHandler();
-        $mobileRestHandler->buddyAction($_GET["userphone"], $_GET["buddyphone"], $_GET["action"]);
+        $mobileRestHandler = new ServiceHandler();
+        $mobileRestHandler->deleteEvent($reqdata);
         break;
 
-    case "track":
+    case "delete discussion":
         // to handle REST Url /mobile/users/
-        $mobileRestHandler = new MobileRestHandler();
-        $mobileRestHandler->getAllTrackers($_GET["phone"]);
+        $mobileRestHandler = new ServiceHandler();
+        $mobileRestHandler->deleteDiscussion($reqdata);
         break;
 }
 ?>

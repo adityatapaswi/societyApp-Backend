@@ -549,10 +549,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getYearsTotal($year) {
+    function deleteEvent($event) {
 
         $services = new Services();
-        $rawData = $services->getYearsTotal($year);
+        $rawData = $services->deleteEvent($event);
 
 
         if (empty($rawData)) {
@@ -573,10 +573,10 @@ class ServiceHandler extends SimpleRest {
         echo json_encode($response);
     }
 
-    function getYearsSummary($year) {
+    function deleteDiscussion($discussion) {
 
         $services = new Services();
-        $rawData = $services->getYearsSummary($year);
+        $rawData = $services->deleteDiscussion($discussion);
 
 
         if (empty($rawData)) {
