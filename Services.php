@@ -365,9 +365,9 @@ Class Services {
             $conn->close();
         } else {
             if (isset($user->doa)) {
-                $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'chairman', '$user->dob', '$user->dob_date', '$user->doa','$user->doa_date',$user->sid);";
+                $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'member', '$user->dob', '$user->dob_date', '$user->doa','$user->doa_date',$user->sid);";
             } else {
-                $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'chairman', '$user->dob', '$user->dob_date', '',null, $user->sid);";
+                $sql = "call create_member('$user->name', '$user->phone', '$user->email', '$user->password', 'member', '$user->dob', '$user->dob_date', '',null, $user->sid);";
             }
         }
 //        echo $sql;
